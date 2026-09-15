@@ -46,13 +46,13 @@ Scripts to **extract texture/radiomics features** and evaluate segmentation metr
 
 ## How to Reproduce the Results
 
-1. **Install Dependencies & Environment**  AANPASSEN
-   - Python ≥ 3.8 recommended.
-   - Key packages: PyTorch, MMCV, MMEngine, MMSegmentation, PyRadiomics, XGBoost, SHAP, pandas, seaborn, etc.
-   - The `mmsegmentation` folder is a partial copy of [MMSegmentation](https://github.com/open-mmlab/mmsegmentation). Ensure versions match `mmseg/__init__.py`.
+1. **Install Dependencies & Environment**  
+   - Install the [Python environment] (environment.yml) with key packages in the correct version: [environment.yml](https://github.com/user-attachments/files/32232943/environment.yml)
 
-2. **Step 2**
-   - Data used in the paper: [Mendeley dataset](https://doi.org/10.17632/yzg86vb895.1).
+2. **Prepare dataset**
+   - Compile a dataset with muscle ultrasound images representative of the group you eventually want to apply the pipeline to.
+   - Recommended dataset size:
+   - The dataset should consist of muscle ultrasound images and corresponding masks, both in .png format. Masks should contain class indices as follows: background = 0, muscle = 1, ignore label = 255 (only for pixels you want the training to ignore)
 
 3. **Step 3**
    - Under `mmsegmentation/tools/`, adapt or create a config for K-Net (similar to `knet_swin_mod`).
