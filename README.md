@@ -29,15 +29,15 @@ Contains the code for muscle segmentation & classification with **K-Net** (based
   Train your segmentation model.
 - **`tools/local_inference.py`**  
   Quick local inference for debugging and a more flexible image source than test.py.
-- **`utils/compareRevisionResults.py`**  
-  Compare segmentation metrics (IoU, precision, recall) for different model versions (multi-label / binary / muscle-specific) with statistical tests.  CHECKEN, WEGHALEN?!
 
 ### 3. **`feature_extraction/`**
 Scripts to **extract texture/radiomics features** and evaluate segmentation metrics:
 
 - **`extractNormalizedTextureFeaturesFast.py`**  
   Extracts radiomics features with PyRadiomics, writing to JSON/Excel.
-
+- **`computeMetricsAndValuesFast.py`**  
+  Generates IoU, precision and recall metrics. Visualising in boxplots
+  
 ### 4. **`analysis/`**
 Contains the code for analysis of the results.
 - **`visualize_mask_and_gt.py`**
