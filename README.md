@@ -51,7 +51,7 @@ Contains the code for analysis of the results.
 ## How to Reproduce the Results
 
 1. **Install Dependencies & Environment**  
-   - Install the [Python environment] (environment.yml) with key packages in the correct version.
+   - Install the [Python environment](environment.yml) with key packages in the correct version.
 
 2. **Prepare dataset**
    - Compile a dataset with muscle ultrasound images representative of the group you eventually want to apply the pipeline to.
