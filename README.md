@@ -1,12 +1,9 @@
 # Machine learning-driven muscle ultrasound segmentation
 This repository implements an automatic and reproducible pipeline for muscle ultrasound analysis introducing a machine learning approach that integrates deep learning-based segmentation. The goal is to enhance the objectivity and efficiency of muscle ultrasound evaluation, reducing reliance on time-consuming manual assessments and overcoming interobserver variability. 
 
-This repository is based on https://github.com/frmrz/Machine-learning-driven-Heckmatt-grading-in-facioscapulohumeral-muscular-dystrophy. This author developed a pipeline for deep learning-based segmentation. An initial analysis revealed that the model is not yet generalisable to ultrasound devices and populations beyond those on which it was originally trained. This repository contains everything that is necessary to finetune the existing model to a different device or population.
+This repository is based on https://github.com/frmrz/Machine-learning-driven-Heckmatt-grading-in-facioscapulohumeral-muscular-dystrophy. This author developed a pipeline for deep learning-based segmentation. An initial analysis revealed that the model is not yet generalisable to ultrasound devices and populations beyond those on which it was originally trained. This repository contains everything that is necessary to finetune the existing model to a different device or population. Contact the corresponding author (https://www.sciencedirect.com/science/article/pii/S1388245725000367) for accessing the trained models.
 
-TOEVOEGEN
-environment!
-matlab voor het juiste filename format (uitleggen waarom matlab)
-waar vind je het open source model
+REF NAAR METHODS
 
 The repository is structured as follows:
 - **`file_preparation/`**: Scripts to prepare the dataset for training or application of the model
@@ -18,7 +15,7 @@ The repository is structured as follows:
 Contains the code for preparing images and masks 
 
 - **`createQUMIAMasks.m`**
-  Matlab script to generate filenames according to the format, and convert masks to correct format (0=background, 1=muscle, 255=ignore)
+  Matlab script to generate filenames according to the format, and convert masks to correct format (0=background, 1=muscle, 255=ignore). Advisable to convert this to a .py file for consistency.
 - **`crop_images_masks_convert_dcm.py`**  
   Crop information from .dcm files while converting them to .png files for the analysis. Crop masks (.png files) accordingly to retain the same image size.
 
@@ -47,7 +44,7 @@ Contains the code for analysis of the results.
 - **`analysis_iou.py`**
   Script to summarise intersection over union, precision and recall. Outputs a .csv file with these values per image and a .csv file with these values grouped per muscle (mean+sd, be careful with small datasets!).
 -  **`echogenicity_compare.py`**
-  Script to compare echogenicity values of predicted masks and ground truth masks. Outputs paired t-test and Wilcoxon signed rank test comparison per muscle and a Bland Altman plot. CHECKEN, OOK PER GROEP DOEN ?!
+  Script to compare echogenicity values of predicted masks and ground truth masks. Outputs paired t-test and Wilcoxon signed rank test comparison per muscle and a Bland Altman plot per group
 
 ---
 
@@ -58,8 +55,9 @@ Contains the code for analysis of the results.
 
 2. **Prepare dataset**
    - Compile a dataset with muscle ultrasound images representative of the group you eventually want to apply the pipeline to.
-   - Recommended dataset size:
    - The dataset should consist of muscle ultrasound images and corresponding masks, both in .png format. Masks should contain class indices as follows: background = 0, muscle = 1, ignore label = 255 (only for pixels you want the training to ignore). Filenames should be structured as follows: PatientID_musclecode_side_index(_visit). See [`file_preparation`](/file_preparation) for scripts and further information.
+   - Use `createQUMIAMasks.m` for filename structure and correct class indices
+   - Use `crop_images_masks_convert_dcm.py` for changing the file format
    - Split images into train/validation/testing folds
 
 3. **Test the segmentation model**
@@ -68,6 +66,10 @@ Contains the code for analysis of the results.
      ```bash
      python local_inference.py /path/to/your_config.py --checkpoint /path/to/your_checkpoint.pth --img_folder /path/to/ultrasound/images/ --out_results path/to/save/results/ --ground_truth /path/to/ground/truth/masks/ --plot_rgb --plot_label_compare
      ```
+   - Extract radiomics features using `extractNormalizedTextureFeaturesFast.py`
+   - Extract and visualise IoU, precision and recall in boxplots using `computeMetricsAndValuesFast.py`
+   - Get IoU, precision and recall per muscle using `analysis_iou.py`
+   - Compare echogenicity values of predicted and ground truth masks using `echogenicity_compare.py`
 
 4. **Train the segmentation model**
    - Under `mmsegmentation/tools/`, adapt or create a config
