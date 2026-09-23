@@ -10,6 +10,7 @@ The repository is structured as follows:
 - **`mmsegmentation/`**: Contains deep learning code for muscle segmentation & classification with K-Net. CHECKEN, DENK ALLEEN TOOLS NODIG
 - **`feature_extraction/`**: Scripts to extract texture/radiomics features and evaluate segmentation metrics.
 - **`analysis/`**: Scripts for further analysis of the results
+- **`input`**: Input files required for scripts
 
 ### 1. **`file_preparation/`**
 Contains the code for preparing images and masks 
@@ -45,6 +46,11 @@ Contains the code for analysis of the results.
   Script to summarise intersection over union, precision and recall. Outputs a .csv file with these values per image and a .csv file with these values grouped per muscle (mean+sd, be careful with small datasets!).
 -  **`echogenicity_compare.py`**
   Script to compare echogenicity values of predicted masks and ground truth masks. Outputs paired t-test and Wilcoxon signed rank test comparison per muscle and a Bland Altman plot per group
+
+### 5. **`input/`**
+Contains files that are required for scripts
+- **`Muscles.xlsx`**
+  Excel file containing the muscle codes. Please note that orbicularis oris is coded with 029, while it was coded as 013 in the base model
 
 ---
 
