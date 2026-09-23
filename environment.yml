@@ -100,7 +100,6 @@ dependencies:
       - mat4py==0.6.0
       - matplotlib==3.7.5
       - mdurl==0.1.2
-      - mmcv==2.1.0
       - mmengine==0.10.5
       - mmpretrain==1.2.0
       - mmsegmentation==1.2.1
