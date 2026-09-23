@@ -57,6 +57,7 @@ Contains files that are required for scripts
 ## How to Reproduce the Results
 
 1. **Install Dependencies & Environment**  
+   - This pipeline was designed for a Linux machine and was tested in Ubuntu22  
    - Install the [Python environment](environment.yml) with key packages in the correct version.
 
 2. **Prepare dataset**
