@@ -53,9 +53,6 @@ muscles = {
     'splenius capitis': '042'
     }
 
-input_dir = Path("/mnt/data/dataset_training/subset_1/results/healthy/pred/")
-groups = {'healthy','last_strong','klinisch'}
-
 alpha = 0.4 # transparency masks
 
 # Colors masks
@@ -84,49 +81,48 @@ def overlay_both(image, gt, pred):
 
     return out.astype(np.uint8)
 
-for group in groups:
-    files_path = Path(f'/mnt/data/dataset_training/subset_1/results/{group}/pred/')
-    files = list(files_path.iterdir())
-    for file in tqdm(files, desc = f"{group}", leave=False):
-    # for file in files_path.iterdir():
-        img_path = f'/mnt/data/dataset_training/subset_1/{group}/converted_png/images/{file.name}'
-        gt_path = f'/mnt/data/dataset_training/subset_1/{group}/converted_png/masks/{file.name}'
-        mask_path = f'/mnt/data/dataset_training/subset_1/results/{group}/pred/{file.name}'
+files_path = Path('/mnt/data/model_to_train/subset_4/zippen/testing/pred/')
+files = list(files_path.iterdir())
+for file in tqdm(files, leave=False):
+# for file in files_path.iterdir():
+    img_path = f'/mnt/data/dataset_training/subset_1/together/images/{file.name}'
+    gt_path = f'/mnt/data/dataset_training/subset_1/together/masks/{file.name}'
+    mask_path = f'/mnt/data/model_to_train/subset_4/zippen/testing/pred/{file.name}'
 
-         # Load image, gt and predicted mask
-        img = np.array(Image.open(img_path).convert("RGB")) #.convert("RGB"))
-        mask = np.array(Image.open(mask_path)) == 1  # 0 = background, 1 = foreground
-        gt = np.array(Image.open(gt_path)) == 1
+        # Load image, gt and predicted mask
+    img = np.array(Image.open(img_path).convert("RGB")) #.convert("RGB"))
+    mask = np.array(Image.open(mask_path)) == 1  # 0 = background, 1 = foreground
+    gt = np.array(Image.open(gt_path)) == 1
 
-        # Create overlays
-        img_gt = overlay(img, gt, gt_color)
-        img_pred = overlay(img, mask, pred_color)
-        img_both = overlay_both(img, gt, mask)
+    # Create overlays
+    img_gt = overlay(img, gt, gt_color)
+    img_pred = overlay(img, mask, pred_color)
+    img_both = overlay_both(img, gt, mask)
 
-        # Get muscle name
-        muscle_code = file.name.split("_")[1]
-        muscle_name = [name for name, code in muscles.items() if code == muscle_code][0]
+    # Get muscle name
+    muscle_code = file.name.split("_")[1]
+    muscle_name = [name for name, code in muscles.items() if code == muscle_code][0]
 
-        # Plot
-        fig, axes = plt.subplots(4, 1, figsize=(6,16))
+    # Plot
+    fig, axes = plt.subplots(4, 1, figsize=(6,16))
 
-        axes[0].imshow(img)
-        axes[0].set_title(f"Original image ({muscle_name})")
-        axes[0].axis("off")
+    axes[0].imshow(img)
+    axes[0].set_title(f"Original image ({muscle_name})")
+    axes[0].axis("off")
 
-        axes[1].imshow(img_gt)
-        axes[1].set_title("Ground truth mask")
-        axes[1].axis("off")
+    axes[1].imshow(img_gt)
+    axes[1].set_title("Ground truth mask")
+    axes[1].axis("off")
 
-        axes[2].imshow(img_pred)
-        axes[2].set_title("Predicted mask")
-        axes[2].axis("off")
+    axes[2].imshow(img_pred)
+    axes[2].set_title("Predicted mask")
+    axes[2].axis("off")
 
-        axes[3].imshow(img_both)
-        axes[3].set_title("Ground truth and prediction")
-        axes[3].axis("off")
+    axes[3].imshow(img_both)
+    axes[3].set_title("Ground truth and prediction")
+    axes[3].axis("off")
 
-        plt.tight_layout()
-        # plt.show()
-        plt.savefig(f"/mnt/data/dataset_training/subset_1/results/comparison/{group}/{file.name}")
-        plt.close()
+    plt.tight_layout()
+    # plt.show()
+    plt.savefig(f"/mnt/data/model_to_train/subset_4/visualised/{file.name}")
+    plt.close()
