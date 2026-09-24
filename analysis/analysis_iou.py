@@ -1,4 +1,6 @@
-" Script for analysis segmentation results"
+''' Script for analysis of segmentation results'''
+'Look up input_dir and change to own directory. Change training_set, net and experiment if necessary'
+
 import json
 import os
 import pandas as pd
@@ -29,22 +31,20 @@ def parse_filename(filename):
             })
     raise ValueError(f"Unknown filename format: {filename}")
 
-input_dir = '/mnt/data/model_to_train/subset_3/first_3000/testing_results/'  # change to directory pointing to ious.json file (group folder is specified later)
-set = 'subset_3_training_3000_iters'    # change to set
-# group = 'klinisch'   # change to group
-# file = 'ious.json'
-file = 'segmentation_summary_knet_swin_mod_muscle_specific.json'
-# ious_dir = os.path.join(input_dir, group, file)
+input_dir = '/home/Documents/testing_github/results/'  # change to directory pointing to ious.json file (group folder is specified later)
+training_set = 'testing_github'    # change to training_set
+net = 'knet_swin_mod'
+experiment = 'subset_3'
+file = f"segmentation_summary_{net}_{experiment}.json"
 ious_dir = os.path.join(input_dir, file)
 
 # Load muscle code mapping
-muscle_map = pd.read_excel("/mnt/data/dataset_training/Muscles.xlsx", sheet_name="codes")
+muscle_map = pd.read_excel("input/Muscles.xlsx", sheet_name="codes")
 muscle_map["Code"] = muscle_map["Code"].astype(int)
 
 # Open file with ious
 with open(ious_dir, 'r') as file:
     info = json.load(file)
-    # ious = info['iou']
 
 df = pd.DataFrame(info)
 df = df.rename(columns={"side": "json_side", "muscle_code": "code", "Muscle": "muscle_name"})   # rename side column in json file
@@ -56,73 +56,7 @@ df = pd.concat([df,parsed],axis=1)
 keep_cols = ['File', 'iou','prec', 'rec','subject','code','side','measurement','visit','muscle_name','group']
 df = df[keep_cols]
 
-
-# Convert IOU column to float
-# df["iou"] = df["iou"].astype(float)
-
-
-# Define group based on filename
-# if len(parts) == 3: # healthy
-#     df[["subject","code","measurement"]] = (
-#         df["File"]
-#         .str.replace(".png","",regex=False)
-#         .str.split("_", expand=True)
-#         )
-#     keep_cols = ['File', 'iou','prec', 'rec','subject','code','measurement','muscle_name']
-
-# elif len(parts) ==4: # klinisch or last_strong
-#     if len(parts[-1]) == 1: # last_strong
-#         df[["subject","code","measurement", "visit"]] = (
-#             df["File"]
-#             .str.replace(".png","",regex=False)
-#             .str.split("_", expand=True)
-#             )
-#         keep_cols = ['File', 'iou','prec', 'rec','subject','code','measurement','visit','muscle_name']
-#     elif len(parts[-1]) ==2: # klinisch
-#         df[["subject","code","side","measurement"]] = (
-#         df["File"]
-#         .str.replace(".png","",regex=False)
-#         .str.split("_", expand=True)
-#         )
-#         keep_cols = ['File', 'iou','prec', 'rec','subject','code','side','measurement','muscle_name']
-
-
-# if  group == 'last_strong':
-#     df[["subject","code","measurement", "visit"]] = (
-#         df["File"]
-#         .str.replace(".png","",regex=False)
-#         .str.split("_", expand=True)
-#         )
-#     keep_cols = ['File', 'iou','prec', 'rec','subject','code','measurement','visit','muscle_name']
-# elif group == 'klinisch':
-#     df[["subject","code","side","measurement"]] = (
-#     df["File"]
-#     .str.replace(".png","",regex=False)
-#     .str.split("_", expand=True)
-#     )
-#     keep_cols = ['File', 'iou','prec', 'rec','subject','code','side','measurement','muscle_name']
-# else:
-#     df[["subject","code","measurement"]] = (
-#         df["File"]
-#         .str.replace(".png","",regex=False)
-#         .str.split("_", expand=True)
-#         )
-#     keep_cols = ['File', 'iou','prec', 'rec','subject','code','measurement','muscle_name']
-
-
-# Add muscle name via lookup
-# df["muscle_int"] = df["code"].astype(int)
-# df = df.merge(
-#     muscle_map.rename(columns={"Code": "muscle_int", "Muscle": "muscle_name"}),
-#     on="muscle_int",
-#     how="left"
-# ).drop(columns="muscle_int")
-
-# df=df[keep_cols]
-# print(df.head())
-
-# Average iou per musclel
-# summary = df.groupby(["code","muscle_name"])[["iou","prec","rec"]].agg(["mean","std","count"])
+# Average iou per muscle
 summary = df.groupby(["code","muscle_name", "group"]).agg(
     iou_mean = ( "iou","mean"),
     iou_sd = ( "iou","std"),
@@ -135,15 +69,14 @@ summary = df.groupby(["code","muscle_name", "group"]).agg(
 
 print(summary.head())
 
-if 'group' in locals() and 'set' in locals():
+if 'group' in locals() and 'training_set' in locals():
     # Save results
-    df.to_csv(os.path.join(input_dir, f"ious_grouped_{set}_{group}.csv"), index=False)
-    print(f"\nGrouped IOUS CSV file saved to: {input_dir}")
-    summary.to_csv(os.path.join(input_dir, f"ious_summary_{set}_{group}.csv"))
-    print(f"\nSummary IOUS CSV file saved to: {input_dir}")
+    df.to_csv(os.path.join(input_dir, f"ious_image_{training_set}_{group}.csv"), index=False)
+    print(f"\nInidividual image IOUS CSV file saved to: {input_dir}")
+    summary.to_csv(os.path.join(input_dir, f"ious_summary_{training_set}_{group}.csv"))
 else:
-    df.to_csv(os.path.join(input_dir, f"ious_grouped_{set}.csv"), index=False)
-    print(f"\nGrouped IOUS CSV file saved to: {input_dir}")
-    summary.to_csv(os.path.join(input_dir, f"ious_summary_{set}.csv"))
-    print(f"\nSummary IOUS CSV file saved to: {input_dir}")
+    df.to_csv(os.path.join(input_dir, f"ious_image_{training_set}.csv"), index=False)
+    print(f"\nIndividual image IOUS CSV file saved to: {input_dir}")
+    summary.to_csv(os.path.join(input_dir, f"ious_summary_{training_set}.csv"))
+print(f"\nSummary IOUS CSV file saved to: {input_dir}")
 

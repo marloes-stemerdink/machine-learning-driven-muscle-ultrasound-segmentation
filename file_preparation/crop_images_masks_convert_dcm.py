@@ -1,10 +1,10 @@
 ''' Script to crop masks and images, and convert DICOM files to png files'''
 'Look up input_dir and output_dir and change to own directories'
+'Change crop values if necessary'
 
 import pydicom
 import matplotlib.pyplot as plt
 import os
-import numpy as np
 from tqdm import tqdm
 from PIL import Image
 from pydicom.errors import InvalidDicomError
@@ -166,10 +166,11 @@ if __name__ == "__main__":
     # # Then comment out the block above and uncomment the batch conversion below.
 
     # ---- STEP 2 (after you know the four crop values): batch convert ----
-    input_dir = "/mnt/data/dataset_training/subset_4/original/no such file/train"
-    output_dir = "/mnt/data/dataset_training/subset_4/converted/training/"
-    os.makedirs(output_dir, exist_ok=True)
-    
+    # TODO change to own directories
+    input_dir = "/home/Documents/testing_github/data/"
+    output_dir = "/home/Documents/testing_github/data/converted/"
+
+    # TODO change crop values if necessary
     top_crop_px = 148
     bottom_crop_px = 216
     left_crop_px = 235
@@ -178,6 +179,7 @@ if __name__ == "__main__":
     # Convert and crop dicom images
     input_dir_images = os.path.join(input_dir,'images/')
     output_dir_images = os.path.join(output_dir,'images/')
+    os.makedirs(output_dir_images, exist_ok=True)
     convert_dicom_to_png(
         input_dir_images,
         output_dir_images,
@@ -190,6 +192,7 @@ if __name__ == "__main__":
     # Crop png masks
     input_dir_masks = os.path.join(input_dir,'masks/')
     output_dir_masks = os.path.join(output_dir,'masks/')
+    os.makedirs(output_dir_masks, exist_ok=True)
 
     crop_all_pngs(input_dir_masks, 
                   output_dir_masks)

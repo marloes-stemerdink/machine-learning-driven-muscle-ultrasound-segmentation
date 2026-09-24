@@ -1,3 +1,6 @@
+''' Script to extract radiomics features'''
+'Look up preds_dirs, gt_dirs, image_dirs and output_path and change to own directories. Change experiment_base and net if necessary'
+
 import numpy as np
 from PIL import Image
 from skimage import morphology
@@ -19,25 +22,22 @@ import multiprocessing
 from functools import partial
 
 # Load CSV with muscle codes
-muscle_code_df = pd.read_csv('data/Muscles.csv')
-code_to_muscle = dict(zip(muscle_code_df['Code'].astype(str).str.zfill(3), muscle_code_df['Muscle']))
+muscle_map = pd.read_excel("input/Muscles.xlsx", sheet_name="codes")
+code_to_muscle = dict(zip(muscle_map['Code'].astype(str).str.zfill(3), muscle_map['Muscle']))
 
-# Define directories
-preds_dirs = ["/mnt/data/model_to_train/subset_4/testing/pred/"]  # predicted masks
-gt_dirs = ["/mnt/data/dataset_training/subset_1/together/masks/"]   # ground truth masks
-image_dirs = ["/mnt/data/dataset_training/subset_1/together/images/"]   # images
+# Define directories #TODO change to own directory
+preds_dirs = ["/home/Documents/testing_github/results/pred/"]  # predicted masks
+gt_dirs = ["/home/Documents/testing_github/data/converted/masks/"]   # ground truth masks
+image_dirs = ["/home/Documents/testing_github/data/converted/images/"]   # images
 
 # Output directories
 net = 'knet_swin_mod'
-experiment = 'muscle_specific'
+experiment = 'subset_3'
 
-output_path = '/mnt/data/model_to_train/subset_4/testing/'
+output_path = '/home/Documents/testing_github/results/'
 
 output_json_path = os.path.join(output_path,f"segmentation_summary_{net}_{experiment}.json")
 output_excel_path = os.path.join(output_path,f"segmentation_summary_{net}_{experiment}.xlsx")
-# output_json_path = f'/mnt/data/model_to_train/results_round_1_with_class_weights/testing_results/segmentation_summary_{net}_{experiment}.json'
-# output_excel_path = f'/mnt/data/model_to_train/results_round_1_with_class_weights/testing_results/segmentation_summary_{net}_{experiment}.xlsx'
-
 
 def retain_largest_object(mask):
     labeled, num = label(mask)
@@ -183,7 +183,7 @@ def process_file(file, fold, pred_fold, gt_fold, img_fold, muscle, classes, clas
     import SimpleITK as sitk
     from radiomics import featureextractor
     import os
-    temp = dict()
+    temp = {}
 
     temp['Fold'] = fold
     muscle_code = file.split('_')[1]
@@ -591,17 +591,6 @@ cmap_muscle = mcolors.ListedColormap(color_names)
 
 # Initialize summary list to collect results from all muscles
 summary = []
-
-# Load missing filenames from txt file missing_filenames.txt
-# missing_filenames = np.loadtxt('/home/francesco/Desktop/POLI/RADBOUD/RESULTS/EXCEL/missing_filenames.txt', dtype=str)
-
-# # Loop over each muscle
-# for muscle in muscle_names:
-
-#     print(f"\nProcessing muscle: {muscle}\n")
-
-#     # Update preds_dirs for the current muscle by formatting the template paths
-#     preds_dirs = [path.format(muscle=muscle) for path in base_preds_dirs_template]
 
 fold = 0  # Reset fold counter for each muscle
 

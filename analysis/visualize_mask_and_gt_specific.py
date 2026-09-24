@@ -1,4 +1,5 @@
-" Script for visualising masks on images to check segmentation by mmsegmentation trained models"
+''' Script for visualising masks on images to check segmentation by mmsegmentation trained models'''
+'Look up img_path, gt_path, mask_path and output_path and change to own directories.'
 import numpy as np
 from PIL import Image
 import matplotlib.pyplot as plt
@@ -74,6 +75,7 @@ def overlay_both(image, gt, pred):
     return out.astype(np.uint8)
 
 # List of selected images
+# TODO change to images you'd like to see visualised
 selected = {
         "healthy": ["00003_007_03.png", "00004_002_02.png"],
         "klinisch": ['00005_006_06_6.png'],
@@ -96,6 +98,8 @@ fig, axes = plt.subplots(4, 4, figsize=(12,12))
 row_labels=["Original image", 'Ground truth mask', 'Predicted mask','Combined']
 letters = ["A", "B", "C", "D"]
 col = 0
+
+output_path="/mnt/data/oud/test_visualise/"
 
 for group, files in selected.items():
     for fname in files:
@@ -138,7 +142,7 @@ for group, files in selected.items():
 
         plt.tight_layout()
         # plt.show()
-fig.savefig(f"/mnt/data/test_visualise/results_figure_subset4_3.png")
-plt.close()
 
+fig.savefig(f'{output_path}results_figure_subset4_3.png')
+plt.close()
  

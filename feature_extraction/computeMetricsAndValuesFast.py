@@ -1,3 +1,6 @@
+''' Script to extract and visualise IoU, precision and recall'''
+'Look up results_dir and change to own directory. Change experiment_base and net if necessary'
+
 import numpy as np
 import pandas as pd
 from pathlib import Path
@@ -6,25 +9,18 @@ import seaborn as sns
 from sklearn.metrics import confusion_matrix, classification_report
 import json
 import gc
-from matplotlib.colors import ListedColormap  # Import for custom colormap
 
 # Avoid plotting plt figures to screen
 plt.ioff()
 
 # Define base directories
-# TODO: update this to point at your own DATA/RESULTS folders
-RESULTS_DIR = Path('/mnt/data/dataset_training/subset_1/results_inference_2/')
+# TODO: update this to point at your own results folders
+RESULTS_DIR = Path('/home/Documents/testing_github/results/')
 testing_round = 'base_model'
 
 def load_data(experiment):
-    """Loads segmentation summary data.
+    """Loads segmentation summary data. """
 
-    Note: HeckMap loading was removed since none of the downstream steps
-    (IoU by fold, confusion matrices, boxplots, summary tables) use the
-    sex/age/bmi/manual_h_score columns it provided. If you later get
-    hold of 'heckMapPlusCharacteristics.xlsx', you can reinstate it and
-    pass it into process_data.
-    """
     segmentation_summary_file = RESULTS_DIR / f'segmentation_summary_{experiment}.json'
     with open(segmentation_summary_file, 'r') as f:
         data = json.load(f)
@@ -35,11 +31,8 @@ def load_data(experiment):
 
 
 def process_data(df):
-    """Processes and cleans the segmentation dataframe.
+    """Processes and cleans the segmentation dataframe. """
 
-    HeckMap-derived columns (sex, age, bmi, manual_h_score) have been
-    dropped since nothing downstream in this script uses them.
-    """
     df['Slice'] = df['File'].apply(lambda x: x.split('_')[-1].split('.')[0])
     df = df[df['Slice'].astype(int) <= 90]
 
@@ -90,14 +83,15 @@ def compute_mean_iou_per_fold(df):
 
 def plot_boxplots(df, experiment):
     """Creates and saves boxplots for segmentation metrics."""
-    boxplot_dir = RESULTS_DIR / 'BOXPLOT'
+    boxplot_dir = RESULTS_DIR / 'boxplot'
     boxplot_dir.mkdir(parents=True, exist_ok=True)
     metrics = ['iou', 'prec', 'rec']
 
     # Create a single boxplot for the whole dataset
     for metric in metrics:
         plt.figure(figsize=(16, 8))
-        sns.boxplot(x='Muscle', y=metric, data=df, palette='tab10')  # Using 'tab10' palette
+        muscle_order = sorted(df["Muscle"].dropna().unique())
+        sns.boxplot(x='Muscle', y=metric, data=df, order=muscle_order, palette='tab10', hue='Muscle')  # Using 'tab10' palette
         plt.title(f'Boxplot of {metric} grouped by Muscle')
         plt.xticks(rotation=90)
         plt.savefig(boxplot_dir / f'{testing_round}_boxplot_{metric}_total.png', dpi=300, bbox_inches='tight')
@@ -106,7 +100,7 @@ def plot_boxplots(df, experiment):
 
 def compute_and_save_summary_tables(df, classes, experiment):
     """Computes summary statistics and saves them to Excel."""
-    excel_dir = RESULTS_DIR / 'EXCEL'
+    excel_dir = RESULTS_DIR / 'excel'
     excel_dir.mkdir(parents=True, exist_ok=True)
     output_file = excel_dir / f'{experiment}_summary_tables.xlsx'
 
@@ -144,7 +138,9 @@ def compute_and_save_summary_tables(df, classes, experiment):
 
 
 def main():
-    experiment = 'knet_swin_mod_muscle_specific'
+    net = 'knet_swin_mod'
+    experiment_base = 'subset_3'
+    experiment =f'{net}_{experiment_base}'
 
     # Load data
     df = load_data(experiment)
@@ -160,7 +156,7 @@ def main():
     print(std_iou_by_fold)
 
     # Save mean and std IoU per fold to Excel in the same file
-    excel_dir = RESULTS_DIR / 'EXCEL'
+    excel_dir = RESULTS_DIR / 'excel'
     excel_dir.mkdir(parents=True, exist_ok=True)
     with pd.ExcelWriter(excel_dir / f'{experiment}_iou_by_fold.xlsx') as writer:
         mean_iou_by_fold.to_excel(writer, sheet_name='mean_iou', index=False)

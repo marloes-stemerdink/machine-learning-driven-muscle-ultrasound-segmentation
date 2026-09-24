@@ -1,3 +1,6 @@
+''' Script to compare echogenicity calues of predicted and ground truth masks'''
+'Look up results_dir and change to own directory. Change experiment_base and net if necessary'
+
 import json
 import os
 from scipy.stats import ttest_rel
@@ -24,10 +27,14 @@ def parse_filename(filename):
     raise ValueError(f"Unknown filename format: {filename}")
 
 # Define json file location
-input_path = "/mnt/data/dataset_training/subset_1/results_inference_2/"
-output_path = "/mnt/data/model_to_train/comparison/"
-testing_round="base_model"
-input_json_path = os.path.join(input_path,"segmentation_summary_knet_swin_mod_muscle_specific.json")
+input_path = "/home/Documents/testing_github/results/"
+testing_round="github_testing"
+net = 'knet_swin_mod'
+experiment = 'subset_3'
+
+input_json_path = os.path.join(input_path,f"segmentation_summary_{net}_{experiment}.json")
+output_path = os.path.join(input_path, "echogenicity_results/")
+os.makedirs(output_path, exist_ok=True)
 
 with open(input_json_path,"r") as f:
     data = json.load(f)
@@ -49,11 +56,9 @@ n_skipped = len(pred_data)-len(mean_pred)
 print(f"Skipped {n_skipped} files because of 'mask not found")
 
 # Only include files that are in both predicted and ground truth
-# common_ids=mean_gt.keys() & mean_pred.keys()
 common_ids = [k for k in mean_gt if k in mean_pred]
 
-# Paired t-test between predicted and ground truth echogenicity scores
-# TODO per muscle 
+# Paired t-test between predicted and ground truth echogenicity scores, per muscle and per group
 result = ttest_rel(
     [float(mean_gt[k]) for k in common_ids],
     [float(mean_pred[k]) for k in common_ids]
@@ -62,7 +67,6 @@ result = ttest_rel(
 print(result)
 
 # Dataframe with ground truths, predicted scores and the corresponding muscle
-# TODO add group (healthy, last strong, klinisch)
 df = pd.DataFrame({
     # "file_id": list(common_ids),
     "file_id": [filenames[f] for f in common_ids],
@@ -75,8 +79,7 @@ group = df["file_id"].apply(parse_filename)
 df = pd.concat([df,group],axis=1)
 
 print(df)
-df.to_csv(os.path.join(input_path, "pred_gt.csv"),index=False)
-
+df.to_csv(os.path.join(output_path, "pred_gt.csv"),index=False)
 
 # Paired t-test per muscle
 results=[]
@@ -117,7 +120,7 @@ for (muscle, group), subset in df.groupby(["muscle","group"]):
     })
 
 df_results = pd.DataFrame(results)
-df_results.to_csv(os.path.join(input_path, "paired_ttest_results.csv"),index=False)
+df_results.to_csv(os.path.join(output_path, "paired_ttest_results.csv"),index=False)
 
 # Bland Altman plot of all muscles together
 df["mean"] = (df["gt"] + df["pred"])/2
@@ -130,8 +133,6 @@ fig, axes = plt.subplots(
     figsize=(18,6),
     sharey=True
 )
-
-# plt.figure(figsize=(10,7))
 
 for ax, group_name in zip(axes,groups):
     subset = df[df["group"] == group_name]
@@ -167,7 +168,6 @@ fig.legend(
     labels,
     title="Muscle",
     loc="lower center",
-    # bbox_to_anchor=(0.5,-0.05),
     ncol=6
 )
 
@@ -178,9 +178,6 @@ if 'testing_round' in locals():
     plt.savefig(f'{output_path}bland_altman_echogenicity_{testing_round}.png')
 else:
     plt.savefig(f'{output_path}bland_altman_echogenicity.png')
-
-
-# plt.tight_layout(rect=[0,0.1,1,1])
 
 plt.show()
 

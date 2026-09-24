@@ -138,51 +138,10 @@ def main():
                 gt_label = Image.open(gt_path.replace('.jpg', '.png'))
                 gt_label = np.array(gt_label)
 
-            
-            # print(f"gt: {gt_label.shape}, pred: {pred_label.shape}")
-            # print(f"gt unique values: {np.unique(gt_label)}")
-            # print(f"pred unique values: {np.unique(pred_label)}")
-
-            # # if the gt label and the pred label have different shapes, center crop the pred label to match the gt label
-            # if gt_label.shape != pred_label.shape:
-            #     # get the delta between the rows and columns
-            #     delta_rows = pred_label.shape[0] - gt_label.shape[0]
-            #     delta_cols = pred_label.shape[1] - gt_label.shape[1]
-
-            #     # get the number of rows and columns to be cropped and round them tho get the indices
-            #     crop_rows = delta_rows // 2
-            #     crop_cols = delta_cols // 2
-
-            #     # crop the pred label
-            #     pred_label = pred_label[crop_rows:crop_rows + gt_label.shape[0],
-            #                             crop_cols:crop_cols + gt_label.shape[1]]
-
-            # # if one size of gt_label is smaller than 256, pad it to 256
-            # if gt_label.shape[0] < 256:
-            #     pad_rows = 256 - gt_label.shape[0]
-            #     gt_label = np.pad(gt_label, ((0, pad_rows), (0, 0)), 'constant', constant_values=0)
-
-            # if gt_label.shape[1] < 256:
-            #     pad_cols = 256 - gt_label.shape[1]
-            #     gt_label = np.pad(gt_label, ((0, 0), (0, pad_cols)), 'constant', constant_values=0)
-
-            # temp = dict()
-            # temp[img_name] = metric(torch.from_numpy(pred_label), torch.from_numpy(gt_label)).numpy()
-
-            # valid_mask = gt_label !=255
-            # metric.reset()
-            # temp[img_name] = metric(
-            #     torch.from_numpy(pred_label[valid_mask]).long(), 
-            #     torch.from_numpy(gt_label[valid_mask]).long()
-            #     ).numpy()
-
             iou_values = metric(
                 torch.from_numpy(pred_label),
                 torch.from_numpy(gt_label)
             ).numpy()
-
-            # print(f'iou values are {iou_values}')
-            # print(iou_values.shape)
 
             temp = {
                 img_name: {
@@ -216,54 +175,16 @@ def main():
             elif gt_path.endswith('.jpg'):
                 gt_label = Image.open(gt_path.replace('.jpg', '.png'))
                 gt_label = np.array(gt_label)
-
-            # # if the gt label and the pred label have different shapes, center crop the pred label to match the gt label
-            # if gt_label.shape != pred_label.shape:
-            #     # get the delta between the rows and columns
-            #     delta_rows = pred_label.shape[0] - gt_label.shape[0]
-            #     delta_cols = pred_label.shape[1] - gt_label.shape[1]
-
-            #     # get the number of rows and columns to be cropped and round them tho get the indices
-            #     crop_rows = delta_rows // 2
-            #     crop_cols = delta_cols // 2
-
-            #     # crop the pred label
-            #     pred_label = pred_label[crop_rows:crop_rows + gt_label.shape[0],
-            #                             crop_cols:crop_cols + gt_label.shape[1]]
                 
             rgb_label_gt = Image.fromarray(color.label2rgb(gt_label, colors=palette).astype(np.uint8))
             rgb_label_pred = Image.fromarray(color.label2rgb(pred_label, colors=palette).astype(np.uint8))
             rgb_img = Image.open(img_path).convert('RGB')
-
-            # rgb_img = np.array(rgb_img)
-
-            # # if the image and the gt label have different shapes, center crop the image to match the gt label
-            # if rgb_img.shape != gt_label.shape:
-            #     # get the delta between the rows and columns
-            #     delta_rows = rgb_img.shape[0] - gt_label.shape[0]
-            #     delta_cols = rgb_img.shape[1] - gt_label.shape[1]
-
-            #     # get the number of rows and columns to be cropped and round them tho get the indices
-            #     crop_rows = delta_rows // 2
-            #     crop_cols = delta_cols // 2
-
-            #     # crop the pred label
-            #     rgb_img = rgb_img[crop_rows:crop_rows + gt_label.shape[0],
-            #                             crop_cols:crop_cols + gt_label.shape[1]]
 
             label_compare = np.hstack((np.array(rgb_img), np.array(rgb_label_gt), np.array(rgb_label_pred)))
             out_path = os.path.join(label_compare_out_folder, img_name)
             Image.fromarray(label_compare).save(out_path)
 
     if args.ground_truth:
-        # print mean and std of ious
-        # ious_values = [item for sublist in ious for item in sublist.values()]
-        # print('Mean iou: ', np.mean(ious_values))
-        # print('Std iou: ', np.std(ious_values))
-        
-        # convert ndarrays to string
-        # ious = [{key: str(value) for key, value in individual_iou.items()} for individual_iou in ious]
-
         # save ious to file json
         with open(os.path.join(out_folder, 'ious.json'), 'w') as f:
             json.dump(ious, f, indent=4)
