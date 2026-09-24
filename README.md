@@ -7,7 +7,7 @@ Contact marloes.stemerdink@radboudumc.nl for the report on previous testing fine
 
 The repository is structured as follows:
 - **`file_preparation/`**: Scripts to prepare the dataset for training or application of the model
-- **`mmsegmentation/`**: Contains deep learning code for muscle segmentation & classification with K-Net. CHECKEN, DENK ALLEEN TOOLS NODIG
+- **`mmsegmentation/`**: Contains scripts for muscle segmentation with K-Net. Only the most relevant scripts, others are part of the mmsegmentation package
 - **`feature_extraction/`**: Scripts to extract texture/radiomics features and evaluate segmentation metrics.
 - **`analysis/`**: Scripts for further analysis of the results
 - **`input`**: Input files required for scripts
