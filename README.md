@@ -51,7 +51,7 @@ Contains the code for analysis of the results.
 Contains files that are required for scripts
 - **`Muscles.xlsx`**
   Excel file containing the muscle codes. Please note that orbicularis oris is coded with 029, while it was coded as 013 in the base model
-- **`finetuning_base_config.py~**
+- **`finetuning_base_config.py`**
   Base config for finetuning. README.md file contains additional information about this file
 
 ---
@@ -61,7 +61,7 @@ Contains files that are required for scripts
 1. **Install Dependencies & Environment**  
    - This pipeline was designed for a Linux machine and was tested in Ubuntu22  
    - Install the [Python environment](environment.yml) with key packages in the correct version
-   - NOTE: package mmcv==2.2.0 may yield some issues. To solve the compatibility issue with mmsegmentation, open __init__.py from mmseg in your environment, and change mmcv_max from 2.2.0 to 2.2.1. Issues related to the absence of mmcv._ext may be related to your CUDA installation, but a few hours of waiting and a quick reboot may also solve this issue.
+   - NOTE: package mmcv==2.2.0 may yield some issues. To solve the compatibility issue with mmsegmentation, open "__ init__.py" from mmseg in your environment, and change mmcv_max from 2.2.0 to 2.2.1. Issues related to the absence of mmcv._ext may be related to your CUDA installation, but a few hours of waiting and a quick reboot may also solve this issue.
 
 2. **Prepare dataset**
    - Compile a dataset with muscle ultrasound images representative of the group you eventually want to apply the pipeline to.
