@@ -24,7 +24,7 @@ data_preprocessor = dict(
         127.5,
     ],
     type='SegDataPreProcessor')
-data_root = '/home/marloes.stemerdink@mydre.org/Documents/testing_github/data/'
+data_root = '/home/Documents/testing_github/data/'
 dataset_type = 'FSHD'
 default_hooks = dict(
     checkpoint=dict(by_epoch=False, interval=10, type='CheckpointHook'),
@@ -39,7 +39,7 @@ env_cfg = dict(
     dist_cfg=dict(backend='nccl'),
     mp_cfg=dict(mp_start_method='fork', opencv_num_threads=0))
 launcher = 'none'
-load_from = '/home/marloes.stemerdink@mydre.org/Documents/testing_github/finetuning_base_config.pth'
+load_from = '/home/Documents/testing_github/finetuning_base_config.pth'
 log_level = 'INFO'
 log_processor = dict(by_epoch=False)
 model = dict(
@@ -258,7 +258,7 @@ test_dataloader = dict(
     batch_size=8,
     dataset=dict(
         data_prefix=dict(img_path='images', seg_map_path='masks'),
-        data_root='/home/marloes.stemerdink@mydre.org/Documents/testing_github/data/testing/',
+        data_root='/home/Documents/testing_github/data/testing/',
         pipeline=[
             dict(type='LoadImageFromFile'),
             dict(keep_ratio=True, scale=(
@@ -291,7 +291,7 @@ train_dataloader = dict(
     dataset=dict(
         data_prefix=dict(
             img_path='images', seg_map_path='masks'),
-        data_root='/home/marloes.stemerdink@mydre.org/Documents/testing_github/data/training/',
+        data_root='/home/Documents/testing_github/data/training/',
         pipeline=[
             dict(type='LoadImageFromFile'),
             dict(reduce_zero_label=False, type='LoadAnnotations'),
@@ -333,7 +333,7 @@ val_dataloader = dict(
     batch_size=8,
     dataset=dict(
         data_prefix=dict(img_path='images', seg_map_path='masks'),
-        data_root='/home/marloes.stemerdink@mydre.org/Documents/testing_github/data/validation/',
+        data_root='/home/Documents/testing_github/data/validation/',
         pipeline=[
             dict(type='LoadImageFromFile'),
             dict(keep_ratio=True, scale=(
@@ -374,10 +374,10 @@ visualizer = dict(
             128,
         ),
     ],
-    save_dir='/home/marloes.stemerdink@mydre.org/Documents/testing_github/training_results/',
+    save_dir='/home/Documents/testing_github/training_results/',
     type='SegLocalVisualizer',
     vis_backends=[
         dict(type='LocalVisBackend'),
         dict(type='WandbVisBackend'),
     ])
-work_dir = '/home/marloes.stemerdink@mydre.org/Documents/testing_github/training_results/'
+work_dir = '/home/Documents/testing_github/training_results/'
