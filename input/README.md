@@ -1,7 +1,7 @@
 # Edit finetuning_base_config.py according to preferences and pointing to own file paths
 
 **data_root**\
-NOTE: data_root is defined more than once in the config, change all paths\
+NOTE: data_root is defined four times in the config, change all paths\
 Change to data path. In the base config, the testing data_root is different. This path is only used when running test.py\
 Folder structure should be as follows;
 - data_root (testing)
