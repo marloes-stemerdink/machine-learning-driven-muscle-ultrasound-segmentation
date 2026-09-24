@@ -51,6 +51,8 @@ Contains the code for analysis of the results.
 Contains files that are required for scripts
 - **`Muscles.xlsx`**
   Excel file containing the muscle codes. Please note that orbicularis oris is coded with 029, while it was coded as 013 in the base model
+- **`finetuning_base_config.py~**
+  Base config for finetuning. README.md file contains additional information about this file
 
 ---
 
