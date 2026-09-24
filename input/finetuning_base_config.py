@@ -24,11 +24,11 @@ data_preprocessor = dict(
         127.5,
     ],
     type='SegDataPreProcessor')
-data_root = '/mnt/data/dataset_training/subset_3/converted/'
+data_root = '/home/marloes.stemerdink@mydre.org/Documents/testing_github/data/'
 dataset_type = 'FSHD'
 default_hooks = dict(
-    checkpoint=dict(by_epoch=False, interval=300, type='CheckpointHook'),
-    logger=dict(interval=50, log_metric_by_epoch=False, type='LoggerHook'),
+    checkpoint=dict(by_epoch=False, interval=10, type='CheckpointHook'),
+    logger=dict(interval=10, log_metric_by_epoch=False, type='LoggerHook'),
     param_scheduler=dict(type='ParamSchedulerHook'),
     sampler_seed=dict(type='DistSamplerSeedHook'),
     timer=dict(type='IterTimerHook'),
@@ -39,7 +39,7 @@ env_cfg = dict(
     dist_cfg=dict(backend='nccl'),
     mp_cfg=dict(mp_start_method='fork', opencv_num_threads=0))
 launcher = 'none'
-load_from = '/mnt/data/model_to_train/FSHD_config_SWIN_f0_binary.pth'
+load_from = '/home/marloes.stemerdink@mydre.org/Documents/testing_github/finetuning_base_config.pth'
 log_level = 'INFO'
 log_processor = dict(by_epoch=False)
 model = dict(
@@ -258,7 +258,7 @@ test_dataloader = dict(
     batch_size=8,
     dataset=dict(
         data_prefix=dict(img_path='images', seg_map_path='masks'),
-        data_root='/mnt/data/dataset_training/subset_1/together/',
+        data_root='/home/marloes.stemerdink@mydre.org/Documents/testing_github/data/testing/',
         pipeline=[
             dict(type='LoadImageFromFile'),
             dict(keep_ratio=True, scale=(
@@ -285,13 +285,13 @@ test_pipeline = [
     dict(reduce_zero_label=False, type='LoadAnnotations'),
     dict(type='PackSegInputs'),
 ]
-train_cfg = dict(max_iters=3000, type='IterBasedTrainLoop', val_interval=300)
+train_cfg = dict(max_iters=100, type='IterBasedTrainLoop', val_interval=10)
 train_dataloader = dict(
     batch_size=2,
     dataset=dict(
         data_prefix=dict(
             img_path='images', seg_map_path='masks'),
-        data_root='/mnt/data/dataset_training/subset_3/converted/training/',
+        data_root='/home/marloes.stemerdink@mydre.org/Documents/testing_github/data/training/',
         pipeline=[
             dict(type='LoadImageFromFile'),
             dict(reduce_zero_label=False, type='LoadAnnotations'),
@@ -333,7 +333,7 @@ val_dataloader = dict(
     batch_size=8,
     dataset=dict(
         data_prefix=dict(img_path='images', seg_map_path='masks'),
-        data_root='/mnt/data/dataset_training/subset_3/converted/validation/',
+        data_root='/home/marloes.stemerdink@mydre.org/Documents/testing_github/data/validation/',
         pipeline=[
             dict(type='LoadImageFromFile'),
             dict(keep_ratio=True, scale=(
@@ -374,10 +374,10 @@ visualizer = dict(
             128,
         ),
     ],
-    save_dir='/mnt/data/model_to_train/subset_3/',
+    save_dir='/home/marloes.stemerdink@mydre.org/Documents/testing_github/training_results/',
     type='SegLocalVisualizer',
     vis_backends=[
         dict(type='LocalVisBackend'),
         dict(type='WandbVisBackend'),
     ])
-work_dir = '/mnt/data/model_to_train/subset_3/'
+work_dir = '/home/marloes.stemerdink@mydre.org/Documents/testing_github/training_results/'
