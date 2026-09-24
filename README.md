@@ -58,7 +58,8 @@ Contains files that are required for scripts
 
 1. **Install Dependencies & Environment**  
    - This pipeline was designed for a Linux machine and was tested in Ubuntu22  
-   - Install the [Python environment](environment.yml) with key packages in the correct version.
+   - Install the [Python environment](environment.yml) with key packages in the correct version
+   - NOTE: package mmcv==2.2.0 may yield some issues. To solve the compatibility issue with mmsegmentation, open __init__.py from mmseg in your environment, and change mmcv_max from 2.2.0 to 2.2.1. Issues related to the absence of mmcv._ext may be related to your CUDA installation, but a few hours of waiting and a quick reboot may also solve this issue.
 
 2. **Prepare dataset**
    - Compile a dataset with muscle ultrasound images representative of the group you eventually want to apply the pipeline to.
@@ -86,9 +87,5 @@ Contains files that are required for scripts
      ```
    - This trains the segmentation network. Edit the config file to train the model in the different modalities (multi-label / binary / muscle-specific).
 
-5. **Step 5**
-   - Use `test.py`:
-     ```bash
-     python test.py /path/to/your_config.py /path/to/checkpoint.pth
-     ```
-   - Saves predictions (PNG). Then run `computeMetricsAndValuesFast.py` or for confusion matric
+5. **Test the finetuned model**
+   - Repeat step 3 with the best-performing checkpoint
