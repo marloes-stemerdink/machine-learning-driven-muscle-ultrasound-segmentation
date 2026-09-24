@@ -1,4 +1,4 @@
-name: newenv
+name: mmsegmentation
 channels:
   - conda-forge
   - defaults
