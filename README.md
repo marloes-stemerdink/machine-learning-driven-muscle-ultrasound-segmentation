@@ -3,7 +3,7 @@ This repository implements an automatic and reproducible pipeline for muscle ult
 
 This repository is based on https://github.com/frmrz/Machine-learning-driven-Heckmatt-grading-in-facioscapulohumeral-muscular-dystrophy. This author developed a pipeline for deep learning-based segmentation. An initial analysis revealed that the model is not yet generalisable to ultrasound devices and populations beyond those on which it was originally trained. This repository contains everything that is necessary to finetune the existing model to a different device or population. Contact the corresponding author (https://www.sciencedirect.com/science/article/pii/S1388245725000367) for accessing the trained models.
 
-REF NAAR METHODS
+Contact marloes.stemerdink@radboudumc.nl for report on previous finetuning on an ultrasound device and populations beyond those on which the model was trained
 
 The repository is structured as follows:
 - **`file_preparation/`**: Scripts to prepare the dataset for training or application of the model
