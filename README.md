@@ -80,7 +80,7 @@ Contains files that are required for scripts
    - Compare echogenicity values of predicted and ground truth masks using `echogenicity_compare.py`
 
 4. **Train the segmentation model**
-   - Under `mmsegmentation/tools/`, adapt or create a config
+   - Under `input/`, adapt or create a config
    - Example:
      ```bash
      python train.py /path/to/your_config.py --work-dir /path/to/save/checkpoints
